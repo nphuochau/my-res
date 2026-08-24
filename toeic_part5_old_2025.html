@@ -1,0 +1,1263 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TOEIC Quiz Application</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+      }
+
+      .main-menu {
+        padding: 40px;
+        text-align: center;
+      }
+
+      .menu-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+      }
+
+      .btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 25px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      }
+
+      .btn-secondary {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      }
+
+      .quiz-options {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .quiz-container {
+        padding: 40px;
+        display: none;
+      }
+
+      .question-card {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .question-number {
+        color: #667eea;
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+      }
+
+      .question-text {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        color: #333;
+      }
+
+      .options {
+        display: grid;
+        gap: 10px;
+      }
+
+      .option {
+        background: white;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 12px 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+      }
+
+      .option:hover {
+        border-color: #667eea;
+        background: #f8f9ff;
+      }
+
+      .option.selected {
+        border-color: #667eea;
+        background: #667eea;
+        color: white;
+      }
+
+      .option.correct {
+        border-color: #28a745;
+        background: #28a745;
+        color: white;
+      }
+
+      .option.incorrect {
+        border-color: #dc3545;
+        background: #dc3545;
+        color: white;
+      }
+
+      .quiz-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 30px 0;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 10px;
+      }
+
+      .progress {
+        text-align: center;
+        color: #667eea;
+        font-weight: bold;
+      }
+
+      .results {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 30px;
+        margin-top: 30px;
+        text-align: center;
+      }
+
+      .score {
+        font-size: 2rem;
+        color: #667eea;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .view-all {
+        display: none;
+        padding: 40px;
+      }
+
+      .questions-grid {
+        display: grid;
+        gap: 20px;
+      }
+
+      .question-item {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        border-left: 4px solid #667eea;
+      }
+
+      .correct-answer {
+        color: #28a745;
+        font-weight: bold;
+        margin-top: 10px;
+      }
+
+      .back-btn {
+        margin-bottom: 20px;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 8px;
+        }
+        .header h1 {
+          font-size: 2rem;
+        }
+
+        .menu-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .btn {
+          width: 100%;
+          max-width: 300px;
+        }
+        .view-all {
+          padding: 8px;
+        }
+        .question-item {
+          padding: 8px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🎯 TOEIC Quiz</h1>
+        <p>Test your English skills with interactive TOEIC questions</p>
+      </div>
+
+      <div class="main-menu" id="mainMenu">
+        <h2 style="margin-bottom: 30px; color: #333">Chọn chế độ luyện tập</h2>
+
+        <div class="menu-buttons">
+          <button class="btn btn-secondary" id="viewAllBtn">
+            📖 View All (80 câu)
+          </button>
+        </div>
+
+        <h3 style="margin: 30px 0 20px 0; color: #667eea">Bắt đầu Quiz</h3>
+        <div class="quiz-options">
+          <button class="btn" id="quiz1to40Btn">🚀 Câu 1 – 40</button>
+          <button class="btn" id="quiz41to80Btn">🎯 Câu 41 – 80</button>
+          <button class="btn" id="quiz80Btn">🏆 Tất cả 80 câu</button>
+        </div>
+      </div>
+
+      <div class="quiz-container" id="quizContainer">
+        <div class="quiz-controls">
+          <button class="btn" id="homeBtn">🏠 Trang chủ</button>
+          <div class="progress" id="progress">Câu 1 / 20</div>
+          <button class="btn" id="submitBtn" style="display: none">
+            ✅ Nộp bài
+          </button>
+        </div>
+
+        <div id="questionContainer"></div>
+
+        <div class="quiz-controls">
+          <button class="btn" id="prevBtn">⬅️ Câu trước</button>
+          <div></div>
+          <button class="btn" id="nextBtn">➡️ Câu tiếp</button>
+        </div>
+
+        <div class="results" id="results" style="display: none">
+          <div class="score" id="scoreText"></div>
+          <p id="resultMessage"></p>
+          <button class="btn" id="reviewBtn" style="margin-top: 20px">
+            📝 Xem lại đáp án
+          </button>
+        </div>
+      </div>
+
+      <div class="view-all" id="viewAll">
+        <button class="btn back-btn" id="backBtn">🏠 Về trang chủ</button>
+        <h2 style="margin-bottom: 30px; color: #333; text-align: center">
+          Tất cả 80 câu hỏi TOEIC
+        </h2>
+        <div class="questions-grid" id="questionsGrid"></div>
+      </div>
+    </div>
+
+    <script>
+      // Dữ liệu câu hỏi
+      const questionsData = {
+        questions: [
+          {
+            number: 101,
+            text: "According to the sign posted in front of the main office, the repair center is now _______ new management.",
+            options: ["A. over", "B. around", "C. between", "D. under"],
+            correct: 3,
+          },
+          {
+            number: 102,
+            text: "_______ you are no doubt aware, the new security system requires the installation of a backup power source in case an emergency situation arises.",
+            options: ["A. As", "B. For", "C. With", "D. So"],
+            correct: 0,
+          },
+          {
+            number: 103,
+            text: "After a highly profitable first six months, the restaurant's profits for the second half of the year were a great _______.",
+            options: [
+              "A. disappoints",
+              "B. disappointed",
+              "C. disappointing",
+              "D. disappointment",
+            ],
+            correct: 3,
+          },
+          {
+            number: 104,
+            text: "Naturally, our company utilizes the production process _______ guarantees the most satisfactory results.",
+            options: ["A. that", "B. who", "C. what", "D. How"],
+            correct: 0,
+          },
+          {
+            number: 105,
+            text: "The unexpected surge in the prices of steel and other minerals will result in a dramatic increase in tax _______ this year.",
+            options: ["A. rates", "B. charges", "C. expenses", "D. revenues"],
+            correct: 3,
+          },
+          {
+            number: 106,
+            text: "Company strategists _______ predicted that conditions in the Middle East would eventually stabilize and result in expanded sales.",
+            options: ["A. wrong", "B. wronged", "C. wrongly", "D. wrongness"],
+            correct: 2,
+          },
+          {
+            number: 107,
+            text: "The director _______ has often been seen to take his lunch in the staff canteen along with the other workers.",
+            options: ["A. him", "B. his", "C. himself", "D. he"],
+            correct: 2,
+          },
+          {
+            number: 108,
+            text: "The secretary filling in at the reception desk has been performing so well that management is considering offering her a _______ position.",
+            options: [
+              "A. durable",
+              "B. periodic",
+              "C. binding",
+              "D. permanent",
+            ],
+            correct: 3,
+          },
+          {
+            number: 109,
+            text: "Ms. Harris was extremely _______ to take an opportunity to thank you for all of the hard-working and dedication.",
+            options: ["A. happy", "B. happily", "C. happier", "D. happiness"],
+            correct: 0,
+          },
+          {
+            number: 110,
+            text: "_______ in computer technology have allowed technicians to perform multidimensional graphics far better than ever before.",
+            options: [
+              "A. Advance",
+              "B. Advancing",
+              "C. Advancement",
+              "D. Advances",
+            ],
+            correct: 3,
+          },
+          {
+            number: 111,
+            text: "To gain access to confidential company documents, employees require _______ from the operations manager.",
+            options: ["A. clear", "B. clarify", "C. clarity", "D. clearance"],
+            correct: 3,
+          },
+          {
+            number: 112,
+            text: "The Department of the Environment supports the replacement of introduced plants with _______ plants that require much less watering.",
+            options: [
+              "A. native",
+              "B. nativity",
+              "C. natively",
+              "D. nativeness",
+            ],
+            correct: 0,
+          },
+          {
+            number: 113,
+            text: "Ms. Julie Kennedy and her innovative marketing team have gained renown for creating _______ products for struggling companies.",
+            options: [
+              "A. promote",
+              "B. promotes",
+              "C. promotion",
+              "D. promotional",
+            ],
+            correct: 3,
+          },
+          {
+            number: 114,
+            text: "The Department of Social Welfare's report this year indicated that it is focusing _______ on the homeless and long-term unemployed.",
+            options: [
+              "A. distinctly",
+              "B. individually",
+              "C. exceptionally",
+              "D. particularly",
+            ],
+            correct: 3,
+          },
+          {
+            number: 115,
+            text: "ABC Shoe Store asked _______ to make their final selections and bring them to cashiers' stations within 30 minutes.",
+            options: ["A. shopper", "B. shopping", "C. to shop", "D. shoppers"],
+            correct: 3,
+          },
+          {
+            number: 116,
+            text: "In next month's issue, _______ coupons offering a steep discount for new subscriptions only.",
+            options: [
+              "A. were inserting",
+              "B. have been inserted",
+              "C. had inserted",
+              "D. will be inserting",
+            ],
+            correct: 3,
+          },
+          {
+            number: 117,
+            text: "Under _______ circumstances, the CEO would have approved the pay increases, but this year it was not possible.",
+            options: [
+              "A. favorable",
+              "B. favorably",
+              "C. favor",
+              "D. favorite",
+            ],
+            correct: 0,
+          },
+          {
+            number: 118,
+            text: "Consultation with the appropriate experts is essential if we are to arrive at an _______ decision.",
+            options: [
+              "A. informed",
+              "B. obtained",
+              "C. enlightened",
+              "D. acquainted",
+            ],
+            correct: 0,
+          },
+          {
+            number: 119,
+            text: "As of October 1, Carla Fishermen will _______ the company as its interface in all dealings with the local government.",
+            options: [
+              "A. accommodate",
+              "B. perform",
+              "C. attend",
+              "D. represent",
+            ],
+            correct: 3,
+          },
+          {
+            number: 120,
+            text: "Although he did not perform _______ well as a student, he went on to become one of the most respected scholars in his field.",
+            options: [
+              "A. especially",
+              "B. sufficiently",
+              "C. desperately",
+              "D. excellently",
+            ],
+            correct: 0,
+          },
+          {
+            number: 121,
+            text: "After the earthquake, the building was _______ unsafe since its foundation was badly damaged.",
+            options: [
+              "A. maximized",
+              "B. erected",
+              "C. arranged",
+              "D. declared",
+            ],
+            correct: 3,
+          },
+          {
+            number: 122,
+            text: "The upcoming convention invites _______ from anyone working or having research interests in the field.",
+            options: [
+              "A. contributions",
+              "B. solutions",
+              "C. additions",
+              "D. subscription",
+            ],
+            correct: 0,
+          },
+          {
+            number: 123,
+            text: "Health inspections are conducted _______ at restaurants throughout the province for the purpose of maintaining high standards of hygiene.",
+            options: [
+              "A. extremely",
+              "B. marginally",
+              "C. overly",
+              "D. routinely",
+            ],
+            correct: 3,
+          },
+          {
+            number: 124,
+            text: "Several exciting new pieces of equipment _______ in our gymnasium, and we invite you to come and try them out at no cost during the next week.",
+            options: [
+              "A. install",
+              "B. installed",
+              "C. have install",
+              "D. have been installed",
+            ],
+            correct: 3,
+          },
+          {
+            number: 125,
+            text: "All drivers are required to maintain _______ logbooks accurately and to hand them in to the central office before leaving on Friday night.",
+            options: ["A. its", "B. his", "C. our", "D. their"],
+            correct: 3,
+          },
+          {
+            number: 126,
+            text: "As you would expect at one of the world's most reputable hotels, the _______ is prompt, efficient, and discreet.",
+            options: [
+              "A. exertion",
+              "B. decision",
+              "C. challenge",
+              "D. service",
+            ],
+            correct: 3,
+          },
+          {
+            number: 127,
+            text: "Rexington Engineering has recently set up an entire new research _______ because of the increasing interest in robotic technology.",
+            options: [
+              "A. separation",
+              "B. partition",
+              "C. segmentation",
+              "D. division",
+            ],
+            correct: 3,
+          },
+          {
+            number: 128,
+            text: "A small group of contestants has been selected following a nationwide search _______ over the last six months.",
+            options: [
+              "A. alerted",
+              "B. engaged",
+              "C. protected",
+              "D. conducted",
+            ],
+            correct: 3,
+          },
+          {
+            number: 129,
+            text: "The chief financial officer believes that we should maintain the present course, _______ his deputy.",
+            options: ["A. as to", "B. whereas", "C. as does", "D. as long as"],
+            correct: 2,
+          },
+          {
+            number: 130,
+            text: "One of the leading companies, Big Star agreed to buy _______ drug company for 10 billion dollars.",
+            options: [
+              "A. rival",
+              "B. compromising",
+              "C. renewed",
+              "D. contrasting",
+            ],
+            correct: 0,
+          },
+          {
+            number: 131,
+            text: "Because there were too many participants at the seminar, we should _______ them into smaller groups for discussion.",
+            options: [
+              "A. divisible",
+              "B. division",
+              "C. dividing",
+              "D. divide",
+            ],
+            correct: 3,
+          },
+          {
+            number: 132,
+            text: "_______ wanting to apply for maternity leave should let their immediate supervisor know about their plans at least one month in advance.",
+            options: ["A. Them", "B. That", "C. One", "D. Those"],
+            correct: 3,
+          },
+          {
+            number: 133,
+            text: "Electron Recycling has developed a profitable business by recycling metals retrieved from _______ electronic components.",
+            options: [
+              "A. discarded",
+              "B. extended",
+              "C. unoccupied",
+              "D. suppressed",
+            ],
+            correct: 0,
+          },
+          {
+            number: 134,
+            text: "The new head of marketing is already making his mark on the company even though he only _______ 6 weeks ago.",
+            options: [
+              "A. carried",
+              "B. elapsed",
+              "C. deliberated",
+              "D. arrived",
+            ],
+            correct: 3,
+          },
+          {
+            number: 135,
+            text: "The FM convenience store in the central park is _______ situated and it is always busy with many customers.",
+            options: [
+              "A. conveniently",
+              "B. promptly",
+              "C. greatly",
+              "D. widely",
+            ],
+            correct: 0,
+          },
+          {
+            number: 136,
+            text: "Once you have paid the appropriate student fees, you will be able to _______ the medical, recreational, and other facilities.",
+            options: [
+              "A. access",
+              "B. accessed",
+              "C. accessory",
+              "D. accessible",
+            ],
+            correct: 0,
+          },
+          {
+            number: 137,
+            text: "Although the _______ for the best design will be very fierce, Mr. Gozalas has a good chance of getting the award.",
+            options: [
+              "A. competitively",
+              "B. competitive",
+              "C. compete",
+              "D. competition",
+            ],
+            correct: 3,
+          },
+          {
+            number: 138,
+            text: "While we still take telephone calls, other _______ of correspondence are encouraged to avoid tying up telephone lines unnecessarily.",
+            options: ["A. profiles", "B. views", "C. outlines", "D. forms"],
+            correct: 3,
+          },
+          {
+            number: 139,
+            text: "Numerous speakers came forward to express their gratitude _______ the retiring secretary's unfailing courtesy and efficiency.",
+            options: ["A. for", "B. at", "C. to", "D. with"],
+            correct: 0,
+          },
+          {
+            number: 140,
+            text: "_______ more factory workers are hired, we cannot meet the deadline for the products on time.",
+            options: ["A. Unless", "B. Also", "C. Except", "D. Therefore"],
+            correct: 0,
+          },
+          {
+            number: 141,
+            text: "_______ the recent sales campaign was not as successful as we had expected, our new range of goods has been well reviewed by consumer groups.",
+            options: [
+              "A. Instead of",
+              "B. Notwithstanding",
+              "C. Although",
+              "D. Whereas",
+            ],
+            correct: 2,
+          },
+          {
+            number: 142,
+            text: "The giant pharmaceutical company insists that its new drug is _______ as long as it is used under the supervision of a doctor.",
+            options: [
+              "A. perfect",
+              "B. perfection",
+              "C. perfectly",
+              "D. perfecting",
+            ],
+            correct: 2,
+          },
+          {
+            number: 143,
+            text: "_______ you have familiarized yourself with the basic commands, we can begin to learn some of this program's more creative features.",
+            options: ["A. Already", "B. Before", "C. Once", "D. Earlier"],
+            correct: 2,
+          },
+          {
+            number: 144,
+            text: "It is true that the number of traffic accidents involving cyclists has increased _______ over the last 10 years.",
+            options: [
+              "A. meagerly",
+              "B. fundamentally",
+              "C. significantly",
+              "D. adequately",
+            ],
+            correct: 2,
+          },
+          {
+            number: 145,
+            text: "Students can _______ in the university's education program starting July 6th.",
+            options: ["A. Enroll", "B. Admit", "C. Apply", "D. Subscribe"],
+            correct: 0,
+          },
+          {
+            number: 146,
+            text: "Hyssop Chemists is _______ experienced pharmacists for the eight new locations they have opened this year.",
+            options: [
+              "A. seeking",
+              "B. looking",
+              "C. entering",
+              "D. requiring",
+            ],
+            correct: 0,
+          },
+          {
+            number: 147,
+            text: "This is an excellent time to consider changing jobs because of the large number of positions _______ available in the mining sector.",
+            options: [
+              "A. commonly",
+              "B. currently",
+              "C. actively",
+              "D. approvingly",
+            ],
+            correct: 1,
+          },
+          {
+            number: 148,
+            text: "The waitress said there weren't any tables open, but she would call my name once one became _______.",
+            options: [
+              "A. availability",
+              "B. availably",
+              "C. avail",
+              "D. available",
+            ],
+            correct: 3,
+          },
+          {
+            number: 149,
+            text: "A light and healthy lunch followed by some exercise will make workers _______ more productive in the afternoon.",
+            options: ["A. complete", "B. much", "C. ample", "D. greatly"],
+            correct: 1,
+          },
+          {
+            number: 150,
+            text: "It is becoming _______ more difficult to find designers who are familiar with this software.",
+            options: [
+              "A. progress",
+              "B. progressive",
+              "C. progression",
+              "D. progressively",
+            ],
+            correct: 3,
+          },
+          {
+            number: 151,
+            text: "Of the six employees in _______ department he is the hardest working one.",
+            options: ["A. himself", "B. him", "C. he", "D. his"],
+            correct: 3,
+          },
+          {
+            number: 152,
+            text: "The Technical Department is currently formulating written guidelines _______ the use of our micro-publishing facilities.",
+            options: ["A. in", "B. for", "C. at", "D. with"],
+            correct: 1,
+          },
+          {
+            number: 153,
+            text: "Actually, the Department of Transportation is responsible _______ approving roadwork permits in the county.",
+            options: ["A. by", "B. to", "C. at", "D. for"],
+            correct: 3,
+          },
+          {
+            number: 154,
+            text: "_______ leaving school, she has worked in a variety of positions but has not yet found one which suits her talents or interests.",
+            options: ["A. Despite", "B. Since", "C. In spite of", "D. If"],
+            correct: 1,
+          },
+          {
+            number: 155,
+            text: "Analysts regarded the _______ between the construction giants a win-win situation for both companies.",
+            options: [
+              "A. factor",
+              "B. management",
+              "C. authority",
+              "D. alliance",
+            ],
+            correct: 3,
+          },
+          {
+            number: 156,
+            text: "For such a large building project, you'll need to take out a massive loan to raise the necessary _______.",
+            options: [
+              "A. assistance",
+              "B. timeline",
+              "C. institution",
+              "D. capital",
+            ],
+            correct: 3,
+          },
+          {
+            number: 157,
+            text: "An investment _______ gradually increases in value over the years can be more profitable than more short-term alternatives.",
+            options: ["A. that", "B. they", "C. what", "D. when"],
+            correct: 0,
+          },
+          {
+            number: 158,
+            text: "Maurice Robertson, _______ an executive at a small company, became the CEO of Bradshaw Industries four months ago.",
+            options: ["A. Once", "B. Often", "C. Soon", "D. Now"],
+            correct: 0,
+          },
+          {
+            number: 159,
+            text: "An independent investigator _______ a report on the company's financial operations which, for some unknown reason, was never released.",
+            options: [
+              "A. contracted",
+              "B. confirmed",
+              "C. compiled",
+              "D. converted",
+            ],
+            correct: 2,
+          },
+          {
+            number: 160,
+            text: "Windpower Co. is faced with financial hardship, so in order to overcome this crisis, _______ financial support is needed.",
+            options: ["A. Extend", "B. Extent", "C. Extensive", "D. Extending"],
+            correct: 2,
+          },
+          {
+            number: 161,
+            text: "Thanks to the advances in technology the state-of-the-art device is made _______ out of plastic.",
+            options: ["A. totaling", "B. total", "C. Totally", "D. totaled"],
+            correct: 2,
+          },
+          {
+            number: 162,
+            text: "Mr. Fukui _______ washes his hands with anti-bacterial detergent right after coming home.",
+            options: ["A. habitual", "B. habit", "C. Habitually", "D. habits"],
+            correct: 2,
+          },
+          {
+            number: 163,
+            text: "Please read the _______ passages carefully, and then answer the multiple choice questions below within the time allotted.",
+            options: [
+              "A. consecutive",
+              "B. constant",
+              "C. following",
+              "D. subsequent",
+            ],
+            correct: 2,
+          },
+          {
+            number: 164,
+            text: "The sudden rainstorm arrived _______, leaving a trail of damage which many predict will take some time to repair.",
+            options: [
+              "A. unexpected",
+              "B. unexpectant",
+              "C. unexpectedly",
+              "D. unexpectedness",
+            ],
+            correct: 2,
+          },
+          {
+            number: 165,
+            text: "Please accept our _______ apology for the mistakes that we made on the last project.",
+            options: [
+              "A. accurate",
+              "B. estimated",
+              "C. Sincere",
+              "D. completed",
+            ],
+            correct: 2,
+          },
+          {
+            number: 166,
+            text: "BMC publishing company will be checking the article _______ mistakes and edit it before printing.",
+            options: ["A. barring", "B. over", "C. for", "D. from"],
+            correct: 2,
+          },
+          {
+            number: 167,
+            text: "Please place your luggage in the overhead locker, and ensure that the locker is closed _______.",
+            options: [
+              "A. secure",
+              "B. securely",
+              "C. securable",
+              "D. secureness",
+            ],
+            correct: 1,
+          },
+          {
+            number: 168,
+            text: "We would like to inform our employees that any complaints should be _______ to their union representative at first.",
+            options: [
+              "A. outlined",
+              "B. addressed",
+              "C. focused",
+              "D. applied",
+            ],
+            correct: 1,
+          },
+          {
+            number: 169,
+            text: "The new tax cuts are designed _______ low-income earners and those with young families.",
+            options: [
+              "A. benefits",
+              "B. to benefit",
+              "C. benefited",
+              "D. benefiting",
+            ],
+            correct: 1,
+          },
+          {
+            number: 170,
+            text: "The budget to be released later this week will _______ reduce spending on employee facilities such as the sports center.",
+            options: ["A. due to", "B. most likely", "C. want", "D. be"],
+            correct: 1,
+          },
+          {
+            number: 171,
+            text: "Following media criticism _______ the Defense Secretary's performance, the President today spoke in his defense at a special press conference.",
+            options: ["A. at", "B. of", "C. for", "D. from"],
+            correct: 1,
+          },
+          {
+            number: 172,
+            text: "_______ good evaluations from their immediate bosses should be the main objective of those who wish to be promoted this Year.",
+            options: [
+              "A. Attain",
+              "B. Attained",
+              "C. Attaining",
+              "D. Attainable",
+            ],
+            correct: 2,
+          },
+
+          {
+            number: 173,
+            text: "Mr. Bonn reassured everyone that a _______ copy of the report will be available by this afternoon's meeting.",
+            options: ["A. revise", "B. revising", "C. revision", "D. revised"],
+            correct: 3,
+          },
+          {
+            number: 174,
+            text: "Only after _______ requests by the tenants did the superintendent do something about the broken intercoms in some of the apartments.",
+            options: [
+              "A. repeat",
+              "B. repeated",
+              "C. repeating",
+              "D. repetition",
+            ],
+            correct: 1,
+          },
+          {
+            number: 175,
+            text: "_______ in universities around the nation has more than tripled compared to this time last year.",
+            options: [
+              "A. Enroll",
+              "B. Enrolls",
+              "C. Enrolling",
+              "D. Enrollment",
+            ],
+            correct: 3,
+          },
+          {
+            number: 176,
+            text: "Due to the heavy damage the storm has caused in some rural areas, it is predicted that the cost of fruits and vegetables will be _______ this summer.",
+            options: [
+              "A. increase",
+              "B. increases",
+              "C. to increase",
+              "D. increasing",
+            ],
+            correct: 3,
+          },
+          {
+            number: 177,
+            text: "All of our stores will be extending their business hours during the holiday season, but we will go back to our _______ hours after the new year.",
+            options: [
+              "A. regular",
+              "B. regulars",
+              "C. regularity",
+              "D. regularities",
+            ],
+            correct: 0,
+          },
+          {
+            number: 178,
+            text: "The company's profits are _______ to hit their peak in the next quarter mainly due to the release of its new line of clothing.",
+            options: [
+              "A. forecast",
+              "B. forecasting",
+              "C. to forecast",
+              "D. will forecast",
+            ],
+            correct: 0,
+          },
+          {
+            number: 179,
+            text: "_______ the job market is not stable, those who persist will be able to land jobs eventually.",
+            options: ["A. Whether", "B. Therefore", "C. Even if", "D. So that"],
+            correct: 2,
+          },
+          {
+            number: 180,
+            text: "It is easy to read Sam because he _______ squints when he finds himself in an uncomfortable situation.",
+            options: ["A. habitually", "B. habitual", "C. habits", "D. habit"],
+            correct: 0,
+          },
+        ],
+      };
+
+      // Global variables
+      let currentQuiz = [];
+      let currentQuestionIndex = 0;
+      let userAnswers = [];
+      let isReviewMode = false;
+
+      // Event listeners
+      document.addEventListener("DOMContentLoaded", function () {
+        // Main menu buttons
+        document
+          .getElementById("viewAllBtn")
+          .addEventListener("click", showAllQuestions);
+        document
+          .getElementById("quiz1to40Btn")
+          .addEventListener("click", () => startQuiz(0, 40));
+        document
+          .getElementById("quiz41to80Btn")
+          .addEventListener("click", () => startQuiz(40, 80));
+        document
+          .getElementById("quiz80Btn")
+          .addEventListener("click", () => startQuiz(0, 80));
+
+        // Quiz control buttons
+        document.getElementById("homeBtn").addEventListener("click", goHome);
+        document
+          .getElementById("submitBtn")
+          .addEventListener("click", submitQuiz);
+        document
+          .getElementById("prevBtn")
+          .addEventListener("click", previousQuestion);
+        document
+          .getElementById("nextBtn")
+          .addEventListener("click", nextQuestion);
+        document
+          .getElementById("reviewBtn")
+          .addEventListener("click", reviewAnswers);
+        document.getElementById("backBtn").addEventListener("click", goHome);
+      });
+
+      // Functions
+      function startQuiz(startIndex, endIndex) {
+        currentQuiz = questionsData.questions.slice(startIndex, endIndex);
+        currentQuestionIndex = 0;
+        userAnswers = new Array(currentQuiz.length).fill(-1);
+        isReviewMode = false;
+
+        document.getElementById("mainMenu").style.display = "none";
+        document.getElementById("viewAll").style.display = "none";
+        document.getElementById("quizContainer").style.display = "block";
+        document.getElementById("results").style.display = "none";
+
+        displayQuestion();
+      }
+
+      function displayQuestion() {
+        const question = currentQuiz[currentQuestionIndex];
+        const container = document.getElementById("questionContainer");
+
+        container.innerHTML = `
+                <div class="question-card">
+                    <div class="question-number">Câu ${
+                      currentQuestionIndex + 1
+                    } (Số ${question.number})</div>
+                    <div class="question-text">${question.text}</div>
+                    <div class="options">
+                        ${question.options
+                          .map(
+                            (option, index) => `
+                            <div class="option ${
+                              userAnswers[currentQuestionIndex] === index
+                                ? "selected"
+                                : ""
+                            } 
+                                ${
+                                  isReviewMode
+                                    ? index === question.correct
+                                      ? "correct"
+                                      : userAnswers[currentQuestionIndex] ===
+                                            index && index !== question.correct
+                                        ? "incorrect"
+                                        : ""
+                                    : ""
+                                }"
+                                data-index="${index}">
+                                ${option}
+                            </div>
+                        `,
+                          )
+                          .join("")}
+                    </div>
+                    ${
+                      isReviewMode
+                        ? `<div class="correct-answer">✅ Đáp án đúng: ${
+                            question.options[question.correct]
+                          }</div>`
+                        : ""
+                    }
+                </div>
+            `;
+
+        // Add click listeners to options
+        if (!isReviewMode) {
+          const options = container.querySelectorAll(".option");
+          options.forEach((option) => {
+            option.addEventListener("click", function () {
+              const index = parseInt(this.dataset.index);
+              selectAnswer(index);
+            });
+          });
+        }
+
+        updateProgress();
+        updateNavigationButtons();
+      }
+
+      function selectAnswer(answerIndex) {
+        if (isReviewMode) return;
+
+        userAnswers[currentQuestionIndex] = answerIndex;
+
+        const options = document.querySelectorAll(".option");
+        options.forEach((option, index) => {
+          option.classList.toggle("selected", index === answerIndex);
+        });
+      }
+
+      function nextQuestion() {
+        if (currentQuestionIndex < currentQuiz.length - 1) {
+          currentQuestionIndex++;
+          displayQuestion();
+        }
+      }
+
+      function previousQuestion() {
+        if (currentQuestionIndex > 0) {
+          currentQuestionIndex--;
+          displayQuestion();
+        }
+      }
+
+      function updateProgress() {
+        document.getElementById("progress").textContent = `Câu ${
+          currentQuestionIndex + 1
+        } / ${currentQuiz.length}`;
+      }
+
+      function updateNavigationButtons() {
+        document.getElementById("prevBtn").style.display =
+          currentQuestionIndex > 0 ? "block" : "none";
+
+        if (!isReviewMode) {
+          document.getElementById("nextBtn").style.display =
+            currentQuestionIndex < currentQuiz.length - 1 ? "block" : "none";
+          document.getElementById("submitBtn").style.display =
+            currentQuestionIndex === currentQuiz.length - 1 ? "block" : "none";
+        } else {
+          document.getElementById("nextBtn").style.display =
+            currentQuestionIndex < currentQuiz.length - 1 ? "block" : "none";
+          document.getElementById("submitBtn").style.display = "none";
+        }
+      }
+
+      function submitQuiz() {
+        let correctAnswers = 0;
+
+        currentQuiz.forEach((question, index) => {
+          if (userAnswers[index] === question.correct) {
+            correctAnswers++;
+          }
+        });
+
+        const percentage = Math.round(
+          (correctAnswers / currentQuiz.length) * 100,
+        );
+
+        document.getElementById("scoreText").textContent =
+          `${correctAnswers}/${currentQuiz.length} (${percentage}%)`;
+
+        let message = "";
+        if (percentage >= 90) {
+          message = "🏆 Xuất sắc! Bạn có trình độ TOEIC rất cao!";
+        } else if (percentage >= 80) {
+          message = "🎉 Tốt lắm! Bạn đã làm bài rất tốt!";
+        } else if (percentage >= 70) {
+          message = "👍 Khá tốt! Hãy tiếp tục luyện tập!";
+        } else if (percentage >= 60) {
+          message = "📚 Cần cải thiện thêm. Hãy ôn luyện nhiều hơn!";
+        } else {
+          message = "💪 Đừng bỏ cuộc! Hãy luyện tập thêm!";
+        }
+
+        document.getElementById("resultMessage").textContent = message;
+        document.getElementById("results").style.display = "block";
+      }
+
+      function reviewAnswers() {
+        isReviewMode = true;
+        currentQuestionIndex = 0;
+        document.getElementById("results").style.display = "none";
+        displayQuestion();
+      }
+
+      function showAllQuestions() {
+        document.getElementById("mainMenu").style.display = "none";
+        document.getElementById("quizContainer").style.display = "none";
+        document.getElementById("viewAll").style.display = "block";
+
+        const grid = document.getElementById("questionsGrid");
+        grid.innerHTML = questionsData.questions
+          .map(
+            (question) => `
+                <div class="question-item">
+                    <div class="question-number">Câu ${question.number}</div>
+                    <div class="question-text">${question.text}</div>
+                    <div class="options" style="margin-top: 15px;">
+                        ${question.options
+                          .map(
+                            (option, index) => `
+                            <div class="option ${
+                              index === question.correct ? "correct" : ""
+                            }" style="margin-bottom: 5px;">
+                                ${option}
+                            </div>
+                        `,
+                          )
+                          .join("")}
+                    </div>
+                    <div class="correct-answer">✅ Đáp án: ${
+                      question.options[question.correct]
+                    }</div>
+                </div>
+            `,
+          )
+          .join("");
+      }
+
+      function goHome() {
+        document.getElementById("mainMenu").style.display = "block";
+        document.getElementById("quizContainer").style.display = "none";
+        document.getElementById("viewAll").style.display = "none";
+      }
+    </script>
+  </body>
+</html>

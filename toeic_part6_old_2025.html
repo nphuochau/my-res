@@ -1,0 +1,1549 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TOEIC Practice Quiz</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 4px;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .header p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+      }
+
+      .main-menu {
+        background: #f8f9fa;
+        padding: 40px;
+        text-align: center;
+      }
+
+      .main-menu h2 {
+        margin-bottom: 30px;
+        color: #495057;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+
+      .btn {
+        padding: 15px 30px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        min-width: 150px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+      }
+
+      .btn-success {
+        background: linear-gradient(45deg, #28a745, #1e7e34);
+        color: white;
+      }
+
+      .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+      }
+
+      .btn-info {
+        background: linear-gradient(45deg, #17a2b8, #117a8b);
+        color: white;
+      }
+
+      .btn-info:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(23, 162, 184, 0.4);
+      }
+
+      .btn-warning {
+        background: linear-gradient(45deg, #ffc107, #e0a800);
+        color: #212529;
+      }
+
+      .btn-warning:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+      }
+
+      .btn-secondary {
+        background: linear-gradient(45deg, #6c757d, #495057);
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+      }
+
+      .quiz-container {
+        display: none;
+        padding: 4px;
+      }
+
+      .quiz-header {
+        background: #e9ecef;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .quiz-progress {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #495057;
+      }
+
+      .quiz-controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .quiz-controls .btn {
+        padding: 8px 16px;
+        font-size: 14px;
+        min-width: auto;
+      }
+
+      .question-group {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 4px;
+        margin-bottom: 25px;
+        border-left: 5px solid #007bff;
+      }
+
+      .question-group h3 {
+        color: #007bff;
+        margin-bottom: 20px;
+        font-size: 1.4rem;
+      }
+
+      .answer-key-group {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 25px;
+        border-left: 5px solid #007bff;
+      }
+
+      .answer-key-group h3 {
+        color: #007bff;
+        margin-bottom: 20px;
+        font-size: 1.4rem;
+      }
+
+      .passage {
+        background: white;
+        padding: 4px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border: 1px solid #dee2e6;
+        white-space: pre-line;
+        line-height: 1.8;
+      }
+
+      .question {
+        background: white;
+        border-radius: 8px;
+        padding: 4px;
+        margin-bottom: 15px;
+        border: 1px solid #dee2e6;
+      }
+
+      .question h4 {
+        color: #495057;
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+      }
+
+      .answer-key-question {
+        background: white;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 10px;
+        border: 1px solid #dee2e6;
+      }
+
+      .answer-key-question h4 {
+        color: #495057;
+        margin-bottom: 10px;
+        font-size: 1rem;
+      }
+
+      .options {
+        display: grid;
+        gap: 10px;
+      }
+
+      .option {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .option:hover {
+        border-color: #007bff;
+        background: #f8f9ff;
+      }
+
+      .option input[type="radio"] {
+        margin-right: 10px;
+        transform: scale(1.2);
+      }
+
+      .option.correct {
+        border-color: #28a745;
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .option.incorrect {
+        border-color: #dc3545;
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .option.not-selected {
+        opacity: 0.6;
+      }
+
+      .correct-answer {
+        background: #d4edda;
+        color: #155724;
+        padding: 8px 12px;
+        border-radius: 5px;
+        font-weight: 600;
+        border: 1px solid #c3e6cb;
+        margin-top: 10px;
+      }
+
+      .navigation-controls {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 25px;
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+
+      .results-summary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin: 25px 0;
+        text-align: center;
+      }
+
+      .results-summary h3 {
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+      }
+
+      .score {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin: 15px 0;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 50px;
+        font-size: 1.2rem;
+        color: #6c757d;
+      }
+
+      .error {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          margin: 4px;
+        }
+
+        .header h1 {
+          font-size: 2rem;
+        }
+
+        .button-group {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .btn {
+          width: 200px;
+        }
+
+        .quiz-header {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .quiz-controls {
+          justify-content: center;
+        }
+
+        .passage {
+          font-size: 14px;
+        }
+
+        .question {
+          font-size: 14px;
+        }
+
+        .answer-key-group {
+          padding: 8px;
+        }
+      }
+
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>TOEIC Practice Quiz</h1>
+        <p>Test your English skills with authentic TOEIC questions</p>
+      </div>
+
+      <!-- Main Menu -->
+      <div class="main-menu" id="mainMenu">
+        <h2>Select Quiz Options</h2>
+        <div class="button-group">
+          <button class="btn btn-primary" onclick="startQuiz('1-10')">
+            Groups 1–10
+          </button>
+          <button class="btn btn-success" onclick="startQuiz('11-17')">
+            Groups 11–17
+          </button>
+          <button class="btn btn-warning" onclick="startQuiz('all')">
+            All Groups
+          </button>
+        </div>
+        <div class="button-group">
+          <button class="btn btn-secondary" onclick="showAllAnswers()">
+            View All Answers
+          </button>
+        </div>
+        <div id="loadingMessage" class="loading">
+          <p>
+            TOEIC data loaded! Select the number of groups to start your
+            practice quiz.
+          </p>
+        </div>
+      </div>
+
+      <!-- All Answers View Container -->
+      <div
+        class="quiz-container"
+        id="allAnswersContainer"
+        style="display: none"
+      >
+        <div class="quiz-header">
+          <div class="quiz-progress">All Groups - Answer Key</div>
+          <div class="quiz-controls">
+            <button class="btn btn-secondary" onclick="showMainMenu()">
+              Home
+            </button>
+          </div>
+        </div>
+
+        <div id="allAnswersContent"></div>
+      </div>
+
+      <!-- Quiz Container -->
+      <div class="quiz-container" id="quizContainer">
+        <div class="quiz-header">
+          <div class="quiz-progress" id="progressInfo">Group 1 of 5</div>
+          <div class="quiz-controls">
+            <button class="btn btn-secondary" onclick="showMainMenu()">
+              Home
+            </button>
+            <button
+              class="btn btn-info"
+              onclick="reviewAnswers()"
+              id="reviewBtn"
+            >
+              Review Answers
+            </button>
+          </div>
+        </div>
+
+        <div id="quizContent"></div>
+
+        <div class="navigation-controls">
+          <button
+            class="btn btn-secondary"
+            onclick="previousGroup()"
+            id="prevBtn"
+          >
+            Previous
+          </button>
+          <button
+            class="btn btn-success"
+            onclick="checkCurrentGroup()"
+            id="checkBtn"
+          >
+            Check Answers
+          </button>
+          <button class="btn btn-primary" onclick="nextGroup()" id="nextBtn">
+            Next
+          </button>
+          <button
+            class="btn btn-warning"
+            onclick="showResults()"
+            id="showResultsBtn"
+            style="display: none"
+          >
+            Show Final Results
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let quizData = [];
+      let currentQuiz = [];
+      let userAnswers = {};
+      let currentGroupIndex = 0;
+      let groupResults = {};
+
+      // Embedded JSON data - replace this with your actual data
+      const embeddedData = [
+        {
+          group_id: 1,
+          passage:
+            "Patagonia Treks\n130 Calle San Martin\nRio Gallegos, Argentina\n\nWelcome to Patagonia Treks! By (1)............... our company, you are guaranteed to get the most out of your experience in the wild lands of Patagonia. No other company offers the high-quality tours that we do into the back country of Argentina. With Patagonia Treks, your experience is guaranteed to be a memorable one.\n\nThe following tour information has been confirmed: Your flight from Miami will (2)............... at 6 a.m. on February 11. A representative from Patagonia Treks will then meet you at the airport when you arrive in Argentina and transport you to our offices so that you can fill out any (3)............... forms prior to the start of the trip.\n\nIt is important that you read the enclosed information, as it contains your itinerary and some suggestions about how to prepare for your trip to Patagonia. Please let us know if you have any questions.\n\nWe appreciate your business and look forward to your visit.\n\nSincerely,\nPatagonia Treks",
+          questions: [
+            {
+              question_number: 1,
+              options: {
+                A: "choose",
+                B: "chooses",
+                C: "choice",
+                D: "choosing",
+              },
+              correct_answer: "D",
+            },
+            {
+              question_number: 2,
+              options: {
+                A: "start",
+                B: "depart",
+                C: "resume",
+                D: "arrive",
+              },
+              correct_answer: "B",
+            },
+            {
+              question_number: 3,
+              options: {
+                A: "remains",
+                B: "remaining",
+                C: "remained",
+                D: "remain",
+              },
+              correct_answer: "B",
+            },
+          ],
+        },
+        {
+          group_id: 2,
+          passage:
+            "MEMO\nTo: All staff\nFrom: Charles Beretti\nDate: January 2\nRe: Lockers\n\nYou may remember that staff voted last fall to have lockers installed in the lounge area. After a few months searching for the right company to help us with this project, we have good news. We would like to announce that we have ............... LockSmart to complete the installation within the next week. All staff should be able to utilize these new lockers to store personal items by next Friday, January 8th. Each staff member will be given a key; please get yours from Marleen in the main office. The lockers will be available ............... all times for your security. We hope that this will make our work environment a secure and happy one. By Monday, LockSmart will begin installation and you may need to stay clear of the lounge area. We are sorry for any inconvenience that ............... by this project, but believe that any short-term inconvenience will be outweighed by the long-term benefits.",
+          questions: [
+            {
+              question_number: 147,
+              options: {
+                A: "collaborated",
+                B: "contracted",
+                C: "decided",
+                D: "discounted",
+              },
+              correct_answer: "B",
+            },
+            {
+              question_number: 148,
+              options: {
+                A: "at",
+                B: "in",
+                C: "by",
+                D: "on",
+              },
+              correct_answer: "A",
+            },
+            {
+              question_number: 149,
+              options: {
+                A: "is caused",
+                B: "causes",
+                C: "caused",
+                D: "has been caused",
+              },
+              correct_answer: "A",
+            },
+          ],
+        },
+        {
+          group_id: 3,
+          passage:
+            "From Pauline Campbell [mailto:pauline.campbell@power.recruit.com]\nTo Mr. Justin Long\nSent: Tues, 20 Jun 2007 2:44 PM\nSubject: Thank You\n\nFirst I'd like to thank you for taking the time to forward your resume and for expressing your interest in employment opportunities with RECRUIT USA, Inc. Your ............... will be reviewed within the next few business days.\n\nShould your qualifications ............... our requirements, we will contact you directly to arrange an interview. ............... the volume of applications we receive, we cannot guarantee that your resume will stay on file for an extended period of time. As new positions are posted on a regular basis, we encourage you to revisit our site and submit further applications as appropriate.\n\nWe wish you the best of luck in your pursuit of new career opportunities and thank you again for your interest in RECRUIT USA, Inc.\n\nSincerely,\nPauline Campbell\nHuman Resources\nRECRUIT USA, Inc.",
+          questions: [
+            {
+              question_number: 141,
+              options: {
+                A: "employment",
+                B: "application",
+                C: "subscription",
+                D: "administration",
+              },
+              correct_answer: "B",
+            },
+            {
+              question_number: 142,
+              options: {
+                A: "agree",
+                B: "equal",
+                C: "match",
+                D: "test",
+              },
+              correct_answer: "C",
+            },
+            {
+              question_number: 143,
+              options: {
+                A: "Due to",
+                B: "Even though",
+                C: "In spite of",
+                D: "In addition to",
+              },
+              correct_answer: "A",
+            },
+          ],
+        },
+        {
+          group_id: 4,
+          passage:
+            "STARGATE SAUNA AND SPA\n\nRecover, relax, and revive at the Stargate Sauna and Spa. Start with a sauna or steam, soak in a relaxing spa, ............... revitalize and soothe your soul with one of Stargate's massages.\n\nChoose from a traditional Chinese massage, Korean style, aromatherapy, body scrub, or a good old-fashioned head and foot massage. With over 20 professional licensed masseurs on staff every day, we are sure to have the style to suit your ............... \n\nWe have separate, luxurious, lounge areas for men and women to relax in. So the next time you feel the need to ............... yourself, come and check us out.\n\nLEVEL 3, ST. LAWRENCE SQUARE MALL\nBUSINESS HOURS: 10AM -11PM\nPHONE: (205) 755-6987",
+          questions: [
+            {
+              question_number: 144,
+              options: {
+                A: "soon",
+                B: "after",
+                C: "then",
+                D: "later",
+              },
+              correct_answer: "C",
+            },
+            {
+              question_number: 145,
+              options: {
+                A: "needs",
+                B: "duties",
+                C: "promises",
+                D: "charges",
+              },
+              correct_answer: "A",
+            },
+            {
+              question_number: 146,
+              options: {
+                A: "repair",
+                B: "recreate",
+                C: "rejuvenate",
+                D: "renovate",
+              },
+              correct_answer: "C",
+            },
+          ],
+        },
+        {
+          group_id: 5,
+          passage:
+            "Latin Group Honors Gabrielle Gonzales\n\nSAN DIEGO - Puerto Rican pop star Gabrielle Gonzales will be named the Latin Recording Academy's Person of the Year for his accomplishments as an entertainer and humanitarian during the year 2006, the academy said yesterday.\n\nAt a special dinner and concert in New York on November 1, Mr. Gonzales ............... with this prestigious award.\n\nA great portion of the proceeds from the evening's extravaganza will go to the Gabrielle Gonzales Foundation, which advocates the ............... of unprivileged children around the globe. According to the Latin Recording Academy President, Ricky Rodriguez, Mr. Gonzales' musical ............... are matched by his endeavors as an advocate for the welfare of unprivileged children around the world.",
+          questions: [
+            {
+              question_number: 150,
+              options: {
+                A: "honor",
+                B: "honoring",
+                C: "is honoring",
+                D: "will be honored",
+              },
+              correct_answer: "D",
+            },
+            {
+              question_number: 151,
+              options: {
+                A: "wills",
+                B: "claims",
+                C: "trials",
+                D: "rights",
+              },
+              correct_answer: "D",
+            },
+            {
+              question_number: 152,
+              options: {
+                A: "performances",
+                B: "accomplishments",
+                C: "productions",
+                D: "creations",
+              },
+              correct_answer: "B",
+            },
+          ],
+        },
+        {
+          group_id: 6,
+          passage:
+            "MEMO\nTo: All R&D staff\nSubject: Safety procedures\n\nAs you know, there was a serious accident in one of our labs last month, resulting in the hospitalization of several people and major property damage. ............... , that has led us to undertake a complete review of our safety guidelines. We are committed to taking whatever steps are necessary to avoid future accidents while ............... our facilities as safe as possible.\n\nBased on the findings of our study, we have crafted a series of 12 new guidelines, which will go into effect starting next Monday. Attached, please find a chart detailing the new rules and the reasoning behind them. This afternoon, you will be given a new set of laboratory equipment, which you will be ............... on by the end of the year.",
+          questions: [
+            {
+              question_number: 150,
+              options: {
+                A: "Comparatively",
+                B: "Alternatively",
+                C: "Surprisingly",
+                D: "Consequently",
+              },
+              correct_answer: "D",
+            },
+            {
+              question_number: 151,
+              options: {
+                A: "making",
+                B: "make",
+                C: "having made",
+                D: "made",
+              },
+              correct_answer: "A",
+            },
+            {
+              question_number: 152,
+              options: {
+                A: "issued",
+                B: "trained",
+                C: "purchased",
+                D: "ordered",
+              },
+              correct_answer: "B",
+            },
+          ],
+        },
+        {
+          group_id: 7,
+          passage:
+            "Please return the overdue item!\n\nWe have discovered that the item you checked out three weeks ago is overdue. Return it immediately. As you probably know, patrons may check out items for a period of up to two weeks, and most new released books for one week.\n\nRenewal is possible any time for a longer period ............... other patrons have reserved them. If you ............... to renew this item, you may do so by calling us toll-free at 1-800-770-1388.\n\nTo avoid further fees, please renew or return the item within 3 days. ............... , we will regrettably need to report it as lost and charge your account for the replacement cost.\n\nYou will not be permitted to borrow or renew any items until such charges have been paid in full.",
+          questions: [
+            {
+              question_number: 147,
+              options: {
+                A: "without",
+                B: "unless",
+                C: "although",
+                D: "however",
+              },
+              correct_answer: "B",
+            },
+            {
+              question_number: 148,
+              options: {
+                A: "would like",
+                B: "were liked",
+                C: "should like",
+                D: "will like",
+              },
+              correct_answer: "A",
+            },
+            {
+              question_number: 149,
+              options: {
+                A: "Thus",
+                B: "However",
+                C: "Besides",
+                D: "Otherwise",
+              },
+              correct_answer: "D",
+            },
+          ],
+        },
+        {
+          group_id: 8,
+          passage:
+            "Dreamaker\nThe professionals that make your nights comfortable\n\nThe Dreamaker Plus ------- the exclusive coil system everyone's been talking about.\n\nFor the past 50 years, the experts at Dreamaker have dedicated their time and effort to bring the Americans a good night's rest by using our reliable and proven technology.\n\nCompared to any conventional spring systems available in the industry, the Dreamaker Plus has nearly twice the coils of any others. Quality comfort layers and fabrics ------- to ensure a\n\nBy increasing the wire thickness in the outer two rows, Dreamaker Plus -------\n\na firmer seating edge, increases the usable sleeping space, and helps to prevent that \"roll out of bed\" feeling.",
+          questions: [
+            {
+              question_number: 141,
+              options: {
+                A: "takes",
+                B: "features",
+                C: "accounts",
+                D: "calculates",
+              },
+              correct_answer: "B",
+            },
+            {
+              question_number: 142,
+              options: {
+                A: "was used",
+                B: "have been used",
+                C: "are to use",
+                D: "will be used",
+              },
+              correct_answer: "B",
+            },
+            {
+              question_number: 143,
+              options: {
+                A: "provide",
+                B: "provisions",
+                C: "providing",
+                D: "provides",
+              },
+              correct_answer: "D",
+            },
+          ],
+        },
+        {
+          group_id: 9,
+          passage:
+            "Sedona, AZ - Communications giant Telestar's first satellite was launched this morning. The satellite will be a key factor in increasing communications capacity as the company increases the size of its market in the western USA. A group of top executives was present in Sedona as the satellite was launched. The satellite should be fully operational ------- 48 hours\n\nafter its launch. Telestar's new communications network will then be ------- by the end\n\nof June. The satellite ------- by Dutch company Sendek and cost approximately",
+          questions: [
+            {
+              question_number: 144,
+              options: {
+                A: "just",
+                B: "when",
+                C: "so",
+                D: "since",
+              },
+              correct_answer: "A",
+            },
+            {
+              question_number: 145,
+              options: {
+                A: "operationally",
+                B: "operational",
+                C: "operation",
+                D: "operate",
+              },
+              correct_answer: "B",
+            },
+            {
+              question_number: 146,
+              options: {
+                A: "made",
+                B: "is making",
+                C: "will be made",
+                D: "was made",
+              },
+              correct_answer: "D",
+            },
+          ],
+        },
+        {
+          group_id: 10,
+          passage:
+            "In our 17 years in business, we have served many real estate firms ------- to your own.\n\nOur most successful contract was with McGordy Home Sales in Phoenix, AZ. In just eight months, we were able to more than double their sales and help them expand into neighboring districts.\n\nOur innovative ad campaigns are what set us apart from other marketing consultants. We use a combination of cutting-edge and traditional advertising methods to ------- your company's\n\nmessage reaches as many potential clients as possible.\n\nIf any of this sounds interesting to you, don't hesitate to contact me with your questions or ideas. I'm sure that if you give us the chance to work with you, we ------- you realize your business's full",
+          questions: [
+            {
+              question_number: 147,
+              options: {
+                A: "similar",
+                B: "common",
+                C: "typical",
+                D: "helpful",
+              },
+              correct_answer: "A",
+            },
+            {
+              question_number: 148,
+              options: {
+                A: "require",
+                B: "decide",
+                C: "reveal",
+                D: "ensure",
+              },
+              correct_answer: "D",
+            },
+            {
+              question_number: 149,
+              options: {
+                A: "helped",
+                B: "help",
+                C: "will help",
+                D: "helping",
+              },
+              correct_answer: "C",
+            },
+          ],
+        },
+        {
+          group_id: 11,
+          passage:
+            "Energetic, new public relations agency is looking for a ------- talented Office/Administrative\n\nAssistant to join and help organize a small but rapidly growing team. You will have at least 2-3 years office experience, be a self-starter with a 'can-do' attitude, and have the ability to bring order to chaos! Duties will include: word processing such as letters, reports, and proposals; developing PowerPoint presentations; creating and maintaining filing systems; creating Excel spreadsheets; organizing meetings; and managing the diaries of consultants and other general office management duties. ------- experience as an administrative assistant in the PR or media\n\nindustry is of value, it is not essential. To be successful in this role, you will have excellent communication skills, be ------- in all Microsoft applications, particularly PowerPoint, and have\n\nan outstanding eye for details. The position is open to both part-time and full-time applicants, and flexible working conditions are offered.\n\nIf you believe you fit the criteria, are bright, energetic, and proactive, please submit a CV outlining your specific experience by Friday, July 7 to recruitment@sinclair.com.",
+          questions: [
+            {
+              question_number: 150,
+              options: {
+                A: "highness",
+                B: "higher",
+                C: "highest",
+                D: "highly",
+              },
+              correct_answer: "D",
+            },
+            {
+              question_number: 151,
+              options: {
+                A: "While",
+                B: "If",
+                C: "Whether",
+                D: "Since",
+              },
+              correct_answer: "A",
+            },
+            {
+              question_number: 152,
+              options: {
+                A: "accomplished",
+                B: "gifted",
+                C: "proficient",
+                D: "qualified",
+              },
+              correct_answer: "C",
+            },
+          ],
+        },
+        {
+          group_id: 12,
+          passage:
+            "I urge you to consider Paolo Nanu as a candidate for a position at your organization. Mr. Nanu worked as a marketing executive at Howard Retail from 1999 to 2006. During that period, he proved ------- to be a loyal, hard-working and honest employee, and he received two promotions and an\n\nemployee award. He was also a popular and well-respected member of our team. In his role as marketing executive, Mr. Nanu showed the consistent ability to ------- deadlines, work either in a\n\nteam or independently, and liaise with clients. In particular, Mr. Nanu demonstrated excellent leadership skills, and he has extensive experience managing projects and supervising employees.\n\nI have absolutely no hesitation in ------- Mr. Nanu for a management role in the field of marketing.\n\nI am confident he will perform all tasks that he is assigned with distinction.",
+          questions: [
+            {
+              question_number: 141,
+              options: {
+                A: "he",
+                B: "him",
+                C: "himself",
+                D: "his",
+              },
+              correct_answer: "C",
+            },
+            {
+              question_number: 142,
+              options: {
+                A: "turn",
+                B: "achieve",
+                C: "meet",
+                D: "break",
+              },
+              correct_answer: "C",
+            },
+            {
+              question_number: 143,
+              options: {
+                A: "recommend",
+                B: "recommending",
+                C: "recommended",
+                D: "recommendation",
+              },
+              correct_answer: "B",
+            },
+          ],
+        },
+        {
+          group_id: 13,
+          passage:
+            "We anticipate an opening for a sales representative in our Sales Division starting June 1. We ------- your information from a recruitment site on the Internet.\n\nPlease inform us ------- you still have an interest in the job and if you will be available to\n\nwork full-time this year.\n\nIf so, please contact us at (718) 222-4455 and make an appointment for an interview. Please refer to the interview schedule that I enclosed with this letter. We will provide more detailed information during the ------- process.\n\nI am looking forward to meeting you soon.",
+          questions: [
+            {
+              question_number: 144,
+              options: {
+                A: "charged",
+                B: "asserted",
+                C: "retained",
+                D: "offered",
+              },
+              correct_answer: "C",
+            },
+            {
+              question_number: 145,
+              options: {
+                A: "in that",
+                B: "despite",
+                C: "moreover",
+                D: "whether",
+              },
+              correct_answer: "D",
+            },
+            {
+              question_number: 146,
+              options: {
+                A: "training",
+                B: "interviewing",
+                C: "developing",
+                D: "improving",
+              },
+              correct_answer: "B",
+            },
+          ],
+        },
+        {
+          group_id: 14,
+          passage:
+            "As the Internet becomes more important in our lives, people are finding they can't bear to be away from their email for a few days even while on vacation. Hotel chains have been ------- the first\n\norganizations to address this modern necessity, outfitting their rooms with Internet access. Some hotels are even lending or renting notebook computers to guests.\n\nFor those who prefer something smaller, most new cell phones are equipped with web surfing capabilities, ------- that only works if you have your account set up for Internet access delivered\n\nby your local service provider. To solve that problem for people on the road, tourist spots in many countries now have cell phone booths. Overseas travelers can rent an online capable cell phone for the ------- of their trip, so they won't miss a single email.",
+          questions: [
+            {
+              question_number: 150,
+              options: {
+                A: "along",
+                B: "at",
+                C: "away",
+                D: "among",
+              },
+              correct_answer: "D",
+            },
+            {
+              question_number: 151,
+              options: {
+                A: "Therefore",
+                B: "However",
+                C: "Furthermore",
+                D: "Subsequently",
+              },
+              correct_answer: "B",
+            },
+            {
+              question_number: 152,
+              options: {
+                A: "duration",
+                B: "completion",
+                C: "itinerary",
+                D: "connection",
+              },
+              correct_answer: "A",
+            },
+          ],
+        },
+        {
+          group_id: 15,
+          passage:
+            "Dear Ms. Salvador,\n\nWe received your request for a current catalogue on March 25. Thank you for your continued interest in our product line. We are continually striving to improve the quality of our parts, and hope that you will find the items included in this year's catalogue to be satisfactory. Along with the catalogue, we are including in this shipment an order form and directions for ordering online.\n\nSome significant changes are ------- in this year's catalogue. More price-saving packages\n\nhave been inserted, and a new index will guide you to the section that you need. In addition, all prices have been updated. You may also be interested to know that ABC Tech has opened another factory in Delaware. ------- this new facility, we will be able to grow our\n\ncompany's line of electronics. In the coming years, you will see even more additions to our catalogue. Thank you once again for your business. Please feel ------- to contact me if you need",
+          questions: [
+            {
+              question_number: 141,
+              options: {
+                A: "produced",
+                B: "included",
+                C: "wished",
+                D: "decided",
+              },
+              correct_answer: "B",
+            },
+            {
+              question_number: 142,
+              options: {
+                A: "During",
+                B: "Before",
+                C: "Among",
+                D: "With",
+              },
+              correct_answer: "D",
+            },
+            {
+              question_number: 143,
+              options: {
+                A: "free",
+                B: "freely",
+                C: "freedom",
+                D: "freeing",
+              },
+              correct_answer: "A",
+            },
+          ],
+        },
+        {
+          group_id: 16,
+          passage:
+            "Dear Division Managers,\n\nThe Board of Directors has decided to reduce our ------- for office supplies at yesterday's\n\nmeeting. It seems that we will have far less money available compared to last year. This is very frustrating, as we ------- more support from the Board of Directors.\n\nI need to compile a list of everyone's office supply needs. Please submit them by Monday so that I can make a list. Please understand our situation and be sure to be ------- about what",
+          questions: [
+            {
+              question_number: 144,
+              options: {
+                A: "budget",
+                B: "addition",
+                C: "itinerary",
+                D: "objectives",
+              },
+              correct_answer: "A",
+            },
+            {
+              question_number: 145,
+              options: {
+                A: "were anticipated",
+                B: "had anticipated",
+                C: "will anticipate",
+                D: "are anticipating",
+              },
+              correct_answer: "B",
+            },
+            {
+              question_number: 146,
+              options: {
+                A: "selection",
+                B: "select",
+                C: "selective",
+                D: "to select",
+              },
+              correct_answer: "C",
+            },
+          ],
+        },
+        {
+          group_id: 17,
+          passage:
+            "From: Wayne Thomas [wayne@e-solutions.com]\nTo: terry.gilbert@monavale.com\nCc: Karen Russell [karen.russell@e-solutions.com]\nSent: Tue, March 07, 2007 14:11 PM\n\nTerry,\n\nI believe you should by now have received the copy of our company profile that we ............... in our last meeting. In it you will find the necessary information you requested. If you still haven't received it, please feel free to contact me.\n\nAnyway, to keep the ball rolling, our Chairman, Mr. Langley would like to have a meeting with Ms. Russell and/or you in Detroit on any date from March 20th to March 24th to have a further discussion on the ............... of our cooperation.\n\nThose dates have been chosen since Mr. Langley will be traveling extensively in ............... March and April. However, if our suggested dates do not suit Ms. Russell, then please let us know your preferred date for the meeting.\n\nBest regards,\n\nWayne",
+          questions: [
+            {
+              question_number: 141,
+              options: {
+                A: "are discussing",
+                B: "had discussed",
+                C: "were in discussion",
+                D: "will be discussing",
+              },
+              correct_answer: "B",
+            },
+            {
+              question_number: 142,
+              options: {
+                A: "most feasible",
+                B: "feasibly",
+                C: "feasibility",
+                D: "more feasible",
+              },
+              correct_answer: "C",
+            },
+            {
+              question_number: 143,
+              options: {
+                A: "neither",
+                B: "either",
+                C: "each",
+                D: "both",
+              },
+              correct_answer: "D",
+            },
+          ],
+        },
+      ];
+
+      // Load the embedded data
+      function loadTOEICData() {
+        try {
+          quizData = embeddedData;
+          console.log("TOEIC data loaded successfully");
+
+          if (quizData.length === 0) {
+            document.getElementById("loadingMessage").innerHTML =
+              '<div class="error">No quiz data available. Please add your TOEIC questions to the embeddedData array.</div>';
+          }
+        } catch (error) {
+          console.error("Error loading TOEIC data:", error);
+          document.getElementById("loadingMessage").innerHTML =
+            '<div class="error">Error: Could not load quiz data.</div>';
+        }
+      }
+
+      // Start quiz with specified number of groups (automatically randomized)
+      function startQuiz(numGroups) {
+        if (quizData.length === 0) {
+          alert("Please wait for the data to load...");
+          return;
+        }
+
+        // Reset everything
+        userAnswers = {};
+        groupResults = {};
+        currentGroupIndex = 0;
+
+        // Select groups based on numGroups parameter
+        if (numGroups === "all") {
+          currentQuiz = [...quizData];
+        } else if (numGroups === "1-10") {
+          currentQuiz = quizData.filter(
+            (g) => g.group_id >= 1 && g.group_id <= 10,
+          );
+        } else if (numGroups === "11-17") {
+          currentQuiz = quizData.filter(
+            (g) => g.group_id >= 11 && g.group_id <= 17,
+          );
+        } else {
+          currentQuiz = quizData.slice(0, Math.min(numGroups, quizData.length));
+        }
+
+        showQuizInterface();
+        displayCurrentGroup();
+      }
+
+      // Remove the startRandomQuiz function as it's no longer needed
+
+      // Show quiz interface and hide main menu
+      function showQuizInterface() {
+        document.getElementById("mainMenu").style.display = "none";
+        document.getElementById("quizContainer").style.display = "block";
+        document.getElementById("allAnswersContainer").style.display = "none";
+      }
+
+      // Show main menu and hide all other interfaces
+      function showMainMenu() {
+        document.getElementById("mainMenu").style.display = "block";
+        document.getElementById("quizContainer").style.display = "none";
+        document.getElementById("allAnswersContainer").style.display = "none";
+
+        // Reset UI state
+        document.getElementById("checkBtn").style.display = "inline-block";
+        document.getElementById("showResultsBtn").style.display = "none";
+      }
+
+      // Show all answers for all groups
+      function showAllAnswers() {
+        if (quizData.length === 0) {
+          alert("Please wait for the data to load...");
+          return;
+        }
+
+        document.getElementById("mainMenu").style.display = "none";
+        document.getElementById("quizContainer").style.display = "none";
+        document.getElementById("allAnswersContainer").style.display = "block";
+
+        displayAllAnswers();
+      }
+
+      // Display all groups with their answers
+      function displayAllAnswers() {
+        let html = "";
+
+        quizData.forEach((group, groupIndex) => {
+          html += `<div class="answer-key-group">`;
+          html += `<h3>Group ${group.group_id}</h3>`;
+
+          // Display passage if it exists
+          if (group.passage) {
+            html += `<div class="passage">${group.passage}</div>`;
+          } else if (group.passages) {
+            // For multiple passages
+            group.passages.forEach((passage, passageIndex) => {
+              html += `<div class="passage">`;
+              if (passage.title) {
+                html += `<h4>${passage.title}</h4>`;
+              }
+              html += `${passage.content || passage}`;
+              html += `</div>`;
+            });
+          }
+
+          // Display questions with correct answers highlighted
+          group.questions.forEach((question, questionIndex) => {
+            const correctAnswer = question.correct_answer;
+            const correctText = question.options[correctAnswer];
+
+            html += `<div class="answer-key-question">`;
+            html += `<h4>Question ${question.question_number || questionIndex + 1}: ${question.question || ""}</h4>`;
+            html += `<div class="options">`;
+
+            Object.entries(question.options).forEach(([key, value]) => {
+              const isCorrect = key === correctAnswer;
+              const optionClass = isCorrect
+                ? "option correct"
+                : "option not-selected";
+
+              html += `
+                            <div class="${optionClass}">
+                                <span><strong>${key}:</strong> ${value}</span>
+                                ${isCorrect ? " ✓" : ""}
+                            </div>`;
+            });
+
+            html += `</div>`;
+            html += `<div class="correct-answer">Correct Answer: <strong>${correctAnswer}</strong> - ${correctText}</div>`;
+            html += `</div>`;
+          });
+
+          html += `</div>`;
+        });
+
+        document.getElementById("allAnswersContent").innerHTML = html;
+      }
+
+      // Display current group
+      function displayCurrentGroup() {
+        if (currentGroupIndex >= currentQuiz.length) {
+          showResults();
+          return;
+        }
+
+        const group = currentQuiz[currentGroupIndex];
+        updateProgressInfo();
+        updateNavigationButtons();
+
+        let html = `<div class="question-group">`;
+        html += `<h3>Group ${group.group_id}</h3>`;
+
+        // Display passage if it exists
+        if (group.passage) {
+          html += `<div class="passage">${group.passage}</div>`;
+        } else if (group.passages) {
+          // For multiple passages
+          group.passages.forEach((passage, passageIndex) => {
+            html += `<div class="passage">`;
+            if (passage.title) {
+              html += `<h4>${passage.title}</h4>`;
+            }
+            html += `${passage.content || passage}`;
+            html += `</div>`;
+          });
+        }
+
+        // Display questions
+        group.questions.forEach((question, questionIndex) => {
+          const questionId = `q_${currentGroupIndex}_${questionIndex}`;
+          html += `<div class="question">`;
+          html += `<h4>Question ${question.question_number || questionIndex + 1}: ${question.question || ""}</h4>`;
+          html += `<div class="options">`;
+
+          Object.entries(question.options).forEach(([key, value]) => {
+            const isChecked = userAnswers[questionId] === key ? "checked" : "";
+            html += `
+                        <label class="option" for="${questionId}_${key}">
+                            <input type="radio" 
+                                   id="${questionId}_${key}" 
+                                   name="${questionId}" 
+                                   value="${key}"
+                                   ${isChecked}
+                                   onchange="recordAnswer('${questionId}', '${key}')">
+                            <span><strong>${key}:</strong> ${value}</span>
+                        </label>`;
+          });
+
+          html += `</div></div>`;
+        });
+
+        html += `</div>`;
+        document.getElementById("quizContent").innerHTML = html;
+
+        // If this group was already checked, show the results
+        if (groupResults[currentGroupIndex]) {
+          displayGroupResults();
+        }
+      }
+
+      // Update progress information
+      function updateProgressInfo() {
+        const progressInfo = document.getElementById("progressInfo");
+        progressInfo.textContent = `Group ${currentGroupIndex + 1} of ${currentQuiz.length}`;
+      }
+
+      // Update navigation buttons
+      function updateNavigationButtons() {
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const checkBtn = document.getElementById("checkBtn");
+        const showResultsBtn = document.getElementById("showResultsBtn");
+
+        prevBtn.style.display =
+          currentGroupIndex === 0 ? "none" : "inline-block";
+
+        if (currentGroupIndex === currentQuiz.length - 1) {
+          nextBtn.style.display = "none";
+          showResultsBtn.style.display = "inline-block";
+        } else {
+          nextBtn.style.display = "inline-block";
+          showResultsBtn.style.display = "none";
+        }
+
+        // Show/hide check button based on whether group is already checked
+        checkBtn.style.display = groupResults[currentGroupIndex]
+          ? "none"
+          : "inline-block";
+      }
+
+      // Record user's answer
+      function recordAnswer(questionId, answer) {
+        userAnswers[questionId] = answer;
+      }
+
+      // Check answers for current group
+      function checkCurrentGroup() {
+        const group = currentQuiz[currentGroupIndex];
+        let correct = 0;
+        let total = group.questions.length;
+
+        group.questions.forEach((question, questionIndex) => {
+          const questionId = `q_${currentGroupIndex}_${questionIndex}`;
+          const userAnswer = userAnswers[questionId];
+          const correctAnswer = question.correct_answer;
+
+          if (userAnswer === correctAnswer) {
+            correct++;
+          }
+        });
+
+        // Store results for this group
+        groupResults[currentGroupIndex] = {
+          correct: correct,
+          total: total,
+          percentage: Math.round((correct / total) * 100),
+        };
+
+        displayGroupResults();
+        updateNavigationButtons();
+      }
+
+      // Display results for current group
+      function displayGroupResults() {
+        const group = currentQuiz[currentGroupIndex];
+
+        group.questions.forEach((question, questionIndex) => {
+          const questionId = `q_${currentGroupIndex}_${questionIndex}`;
+          const userAnswer = userAnswers[questionId];
+          const correctAnswer = question.correct_answer;
+
+          // Highlight options
+          Object.keys(question.options).forEach((optionKey) => {
+            const optionElement = document.querySelector(
+              `label[for="${questionId}_${optionKey}"]`,
+            );
+            if (optionElement) {
+              // Reset classes
+              optionElement.classList.remove(
+                "correct",
+                "incorrect",
+                "not-selected",
+              );
+
+              if (optionKey === correctAnswer) {
+                optionElement.classList.add("correct");
+              }
+
+              if (
+                userAnswer &&
+                optionKey === userAnswer &&
+                optionKey !== correctAnswer
+              ) {
+                optionElement.classList.add("incorrect");
+              }
+
+              if (!userAnswer || optionKey !== userAnswer) {
+                if (optionKey !== correctAnswer) {
+                  optionElement.classList.add("not-selected");
+                }
+              }
+            }
+          });
+        });
+
+        // Show group result
+        const result = groupResults[currentGroupIndex];
+        const resultHtml = `
+                <div class="results-summary">
+                    <h3>Group ${currentGroupIndex + 1} Results</h3>
+                    <div class="score">${result.correct}/${result.total}</div>
+                    <p>Score: ${result.percentage}%</p>
+                </div>`;
+
+        document
+          .getElementById("quizContent")
+          .insertAdjacentHTML("beforeend", resultHtml);
+      }
+
+      // Navigation functions
+      function previousGroup() {
+        if (currentGroupIndex > 0) {
+          currentGroupIndex--;
+          displayCurrentGroup();
+        }
+      }
+
+      function nextGroup() {
+        if (currentGroupIndex < currentQuiz.length - 1) {
+          currentGroupIndex++;
+          displayCurrentGroup();
+        }
+      }
+
+      // Show final results (automatically check unchecked groups)
+      function showResults() {
+        // First, automatically check any groups that haven't been checked yet
+        for (
+          let groupIndex = 0;
+          groupIndex < currentQuiz.length;
+          groupIndex++
+        ) {
+          if (!groupResults[groupIndex]) {
+            const group = currentQuiz[groupIndex];
+            let correct = 0;
+            let total = group.questions.length;
+
+            group.questions.forEach((question, questionIndex) => {
+              const questionId = `q_${groupIndex}_${questionIndex}`;
+              const userAnswer = userAnswers[questionId];
+              const correctAnswer = question.correct_answer;
+
+              if (userAnswer === correctAnswer) {
+                correct++;
+              }
+            });
+
+            // Store results for this group
+            groupResults[groupIndex] = {
+              correct: correct,
+              total: total,
+              percentage: Math.round((correct / total) * 100),
+            };
+          }
+        }
+
+        let totalCorrect = 0;
+        let totalQuestions = 0;
+
+        Object.values(groupResults).forEach((result) => {
+          totalCorrect += result.correct;
+          totalQuestions += result.total;
+        });
+
+        const overallPercentage =
+          totalQuestions > 0
+            ? Math.round((totalCorrect / totalQuestions) * 100)
+            : 0;
+
+        let html = `
+                <div class="results-summary">
+                    <h3>Final Results</h3>
+                    <div class="score">${totalCorrect}/${totalQuestions}</div>
+                    <p>Overall Score: ${overallPercentage}%</p>
+                    <p>${getScoreMessage(overallPercentage)}</p>
+                </div>
+
+                <div class="question-group">
+                    <h3>Group Breakdown</h3>`;
+
+        Object.entries(groupResults).forEach(([groupIndex, result]) => {
+          const group = currentQuiz[parseInt(groupIndex)];
+          html += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; margin: 5px 0; border-radius: 5px;">
+                        <span><strong>Group ${parseInt(groupIndex) + 1}</strong></span>
+                        <span><strong>${result.correct}/${result.total}</strong> (${result.percentage}%)</span>
+                    </div>`;
+        });
+
+        html += `</div>`;
+        document.getElementById("quizContent").innerHTML = html;
+
+        // Update navigation
+        document.getElementById("prevBtn").style.display = "none";
+        document.getElementById("nextBtn").style.display = "none";
+        document.getElementById("checkBtn").style.display = "none";
+        document.getElementById("showResultsBtn").style.display = "none";
+      }
+
+      // Review all answers
+      function reviewAnswers() {
+        currentGroupIndex = 0;
+        displayCurrentGroup();
+      }
+
+      // Get score message based on percentage
+      function getScoreMessage(percentage) {
+        if (percentage >= 90)
+          return "Excellent! You're well prepared for the TOEIC!";
+        if (percentage >= 80)
+          return "Great job! You have a solid understanding.";
+        if (percentage >= 70) return "Good work! Keep practicing to improve.";
+        if (percentage >= 60) return "Not bad! Focus on areas you missed.";
+        return "Keep studying! Practice makes perfect.";
+      }
+
+      // Initialize the application
+      window.addEventListener("DOMContentLoaded", loadTOEICData);
+    </script>
+  </body>
+</html>
